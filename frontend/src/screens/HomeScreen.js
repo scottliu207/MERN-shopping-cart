@@ -1,22 +1,38 @@
-import React, {useState, useEffect} from "react"
-import {Row, Col} from "react-bootstrap"
+import React, { useState, useEffect } from "react"
+import { Row, Col } from "react-bootstrap"
 import Product from "../components/Product"
-import axios from "axios"
+import Loader from "../components/Loader"
+import Message from "../components/Message"
+import { useDispatch, useSelector } from "react-redux"
+import { listProducts } from "../actions/productActions"
+
 const HomeScreen = () => {
     
-    const [products, setProducts] = useState([])
+
+    const dispatch = useDispatch()
+    
+    const productList = useSelector(state=>state.productList)
+    const { loading, error, products } = productList
 
     useEffect(()=> {
-        const fetchProducts = async () => {
-            const { data } =  await axios.get("/api/products")
-            setProducts(data)
-        }
-        fetchProducts()
-    }, [])
+
+        dispatch(listProducts())
+
+    }, [dispatch])
+
+    
     
     return (
+        
         <div>
             <h1>Welcome to Max</h1>
+            
+            {loading ? (
+                <Loader /> 
+            ) :  error ? (
+                <Message variant="danger">{error}</Message> 
+            ): (
+                <>
             <h3>最新商品</h3>
             <Row md={8}>
                 {products.map( product => (
@@ -25,6 +41,9 @@ const HomeScreen = () => {
                 </Col>
                 ))}
             </Row>
+            </>  
+            )}
+            
         </div>
     )
 }

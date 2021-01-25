@@ -37,7 +37,7 @@ const CartScreen = ({ match, location, history }) => {
             <Col md={8}>
                 {cartItems.length === 0 ? 
                 <Message>購物車是空的
-                    <Link to="/"> 回首頁</Link>
+                    <Link to="/"> 回首頁?</Link>
                 </Message> : (
 
                     <ListGroup variant="flush">

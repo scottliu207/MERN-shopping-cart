@@ -1,35 +1,51 @@
 import axios from "axios"
 import {
-    CART_ADD_ITEM, 
-    CART_REMOVE_ITEM
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+  CART_SAVE_PAYMENT_METHOD,
 } from "../constants/cartConstants"
 
-export const addToCart = (id, qty) => async(dispatch, getState) => {
-    const { data } = await axios.get(`/api/products/${id}`)
+export const addToCart = (id, qty) => async (dispatch, getState) => {
+  const { data } = await axios.get(`/api/products/${id}`)
 
-    dispatch({
-        type:CART_ADD_ITEM,
-        payload:{
-            product_id : data._id,
-            name: data.name,
-            image:data.image,
-            price:data.price,
-            countInStock: data.countInStock,
-            qty
-        }
-    })
+  dispatch({
+    type: CART_ADD_ITEM,
+    payload: {
+      product_id: data._id,
+      name: data.name,
+      image: data.image,
+      price: data.price,
+      countInStock: data.countInStock,
+      qty,
+    },
+  })
 
-    localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }
-
 
 export const removeFromCart = (id) => (dispatch, getState) => {
-    dispatch({
-        type:CART_REMOVE_ITEM,
-        payload:id
-    })
+  dispatch({
+    type: CART_REMOVE_ITEM,
+    payload: id,
+  })
 
-    localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }
 
+export const saveShippingAddress = (shippingInfo) => (dispatch) => {
+  dispatch({
+    type: CART_SAVE_SHIPPING_ADDRESS,
+    payload: shippingInfo,
+  })
+  localStorage.setItem("shippingAddress", JSON.stringify(shippingInfo))
+}
 
+export const savePaymentMethod = (method) => (dispatch) => {
+  dispatch({
+    type: CART_SAVE_PAYMENT_METHOD,
+    payload: method,
+  })
+
+  localStorage.setItem("paymentMethod", JSON.stringify(method))
+}

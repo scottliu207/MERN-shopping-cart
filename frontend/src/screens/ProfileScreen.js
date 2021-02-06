@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { Form, Button, Row, Col } from "react-bootstrap"
-import FormContainer from "../components/FormContainer"
+import { Form, Button, Row, Col, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { getUserDetails, upadateUserProfile } from "../actions/userActions"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
+import { getMyOrderList } from "../actions/orderActions"
+import { LinkContainer } from "react-router-bootstrap"
 
 const ProfileScreen = ({ history }) => {
   const [name, setName] = useState("")
@@ -17,7 +18,6 @@ const ProfileScreen = ({ history }) => {
   const dispatch = useDispatch()
 
   const userDetails = useSelector((state) => state.userDetails)
-
   const { loading, error, user } = userDetails
 
   const userLogin = useSelector((state) => state.userLogin)
@@ -26,23 +26,22 @@ const ProfileScreen = ({ history }) => {
   const updateProfile = useSelector((state) => state.updateProfile)
   const { success, error: updatedError } = updateProfile
 
-  useEffect(
-    () => {
-      if (!userInfo) {
-        history.push("/login")
+  const myOrderList = useSelector((state) => state.getMyOrderList)
+  const { loading: loadingOrders, error: errorOrders, orders } = myOrderList
+
+  useEffect(() => {
+    if (!userInfo) {
+      history.push("/login")
+    } else {
+      if (!user || success || !user.name) {
+        dispatch(getUserDetails())
+        dispatch(getMyOrderList())
       } else {
-        if (!user) {
-          dispatch(getUserDetails())
-        } else {
-          setName(userInfo.name)
-          setEmail(userInfo.email)
-        }
+        setName(userInfo.name)
+        setEmail(userInfo.email)
       }
-    },
-    userInfo,
-    user,
-    history
-  )
+    }
+  }, [userInfo, dispatch, user, history])
 
   const submitHandler = (event) => {
     event.preventDefault()
@@ -58,6 +57,8 @@ const ProfileScreen = ({ history }) => {
           password: password,
         })
       )
+
+      dispatch(getUserDetails())
     }
   }
   return (
@@ -119,11 +120,72 @@ const ProfileScreen = ({ history }) => {
               若無須更改密碼請保留空白
             </Form.Text>
           </Form.Group>
-          <Button type="submit">送出</Button>
+          <Button type="submit">更改</Button>
         </Form>
       </Col>
       <Col md={8}>
         <h1>我的購物清單</h1>
+        <Table
+          bordered
+          striped
+          hover
+          responsive
+          size="sm"
+          className="text-center"
+        >
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>建立日期</th>
+              <th>總金額</th>
+              <th>付款</th>
+              <th>出貨</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loadingOrders ? (
+              <Loader />
+            ) : errorOrders ? (
+              <Message variant="danger">{errorOrders}</Message>
+            ) : (
+              orders.map((order) => {
+                return (
+                  <tr key={order._id}>
+                    <th>{order._id}</th>
+                    <th>{order.createdAt.substring(0, 10)}</th>
+                    <th>{order.totalPrice}</th>
+                    <th>
+                      {order.isPaid ? (
+                        order.paidAt.substring(0, 10)
+                      ) : (
+                        <i
+                          className="fas fa-times"
+                          style={{ color: "red" }}
+                        ></i>
+                      )}
+                    </th>
+                    <th>
+                      {order.isDelivered ? (
+                        order.deliveredAt.substring(0, 10)
+                      ) : (
+                        <i
+                          className="fas fa-times"
+                          style={{ color: "red" }}
+                        ></i>
+                      )}
+                    </th>
+
+                    <th>
+                      <LinkContainer to={`/orders/${order._id}`}>
+                        <Button className="btn-sm btn-light">詳情</Button>
+                      </LinkContainer>
+                    </th>
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </Table>
       </Col>
     </Row>
   )

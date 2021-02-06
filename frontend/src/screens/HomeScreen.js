@@ -7,45 +7,37 @@ import { useDispatch, useSelector } from "react-redux"
 import { listProducts } from "../actions/productActions"
 
 const HomeScreen = () => {
-    
+  const dispatch = useDispatch()
 
-    const dispatch = useDispatch()
-    
-    const productList = useSelector(state=>state.productList)
-    const { loading, error, products } = productList
+  const productList = useSelector((state) => state.productList)
+  const { loading, error, products } = productList
 
-    useEffect(()=> {
+  useEffect(() => {
+    dispatch(listProducts())
+  }, [dispatch])
 
-        dispatch(listProducts())
+  return (
+    <div>
+      <h1>Welcome to Max</h1>
 
-    }, [dispatch])
-
-    
-    
-    return (
-        
-        <div>
-            <h1>Welcome to Max</h1>
-            
-            {loading ? (
-                <Loader /> 
-            ) :  error ? (
-                <Message variant="danger">{error}</Message> 
-            ): (
-                <>
-            <h3>最新商品</h3>
-            <Row md={8}>
-                {products.map( product => (
-                <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                    <Product product={product}/>
-                </Col>
-                ))}
-            </Row>
-            </>  
-            )}
-            
-        </div>
-    )
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <>
+          <h3>最新商品</h3>
+          <Row md={8}>
+            {products.map((product) => (
+              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                <Product product={product} />
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
+    </div>
+  )
 }
 
 export default HomeScreen

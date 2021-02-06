@@ -14,9 +14,6 @@ const app = express()
 app.use(express.json())
 
 connectDB()
-app.get("/", (req, res) => {
-  res.send("API is runing...")
-})
 
 app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
@@ -25,6 +22,20 @@ app.get("/api/config/paypal", (req, res) =>
 app.use("/api/products", productRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
+
+const __dirname = path.resolve()
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/build")))
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build"))
+  })
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is runing...")
+  })
+}
+
 app.use(pageNotFound)
 app.use(errorHandler)
 

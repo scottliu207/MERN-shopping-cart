@@ -23,19 +23,18 @@ const OrderScreen = ({ match }) => {
       const { data: clientId } = await axios.get("/api/config/paypal")
       const script = document.createElement("script")
       script.type = "text/javascript"
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=TWD`
       script.async = true
       script.onload = () => {
         setSdkReady(true)
       }
       document.body.appendChild(script)
     }
-    console.log(window.paypal)
     addPayPal()
 
-    if (!order || successPay) {
-      dispatch(getOrderDetails(orderId))
+    if (!order || successPay || order._id !== orderId) {
       dispatch({ type: ORDER_PAY_RESET })
+      dispatch(getOrderDetails(orderId))
     } else if (!order.isPaid) {
       if (!window.paypal) {
         addPayPal()
@@ -43,7 +42,7 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true)
       }
     }
-  }, [orderId, dispatch])
+  }, [orderId, dispatch, successPay])
 
   const onSuccessHandler = (paymentResult) => {
     dispatch(getOrderPay(orderId, paymentResult))
@@ -52,7 +51,7 @@ const OrderScreen = ({ match }) => {
     <Container>
       {loading ? (
         <Loader />
-      ) : error ? (
+      ) : error || errorPay ? (
         <Message variant="danger">{error}</Message>
       ) : (
         <Row>
@@ -85,7 +84,7 @@ const OrderScreen = ({ match }) => {
                 </p>
 
                 {order.isPaid ? (
-                  <Message>已於 {order.paidAt} 付款</Message>
+                  <Message>已於 {order.paidAt.substring(0, 10)} 付款</Message>
                 ) : (
                   <Message variant="danger">尚未付款</Message>
                 )}

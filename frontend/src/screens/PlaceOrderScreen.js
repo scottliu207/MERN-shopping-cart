@@ -2,9 +2,10 @@ import React, { useEffect } from "react"
 import { Row, Col, Container, ListGroup, Image, Button } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
+import { addOrderItems } from "../actions/orderActions"
 import CheckoutSteps from "../components/CheckoutSteps"
 import Message from "../components/Message"
-import { addOrderItems } from "../actions/orderActions"
+import { CART_RESET } from "../constants/cartConstants"
 
 const PlaceOrderScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart)
@@ -24,13 +25,15 @@ const PlaceOrderScreen = ({ history }) => {
   )
 
   const addOrder = useSelector((state) => state.addOrder)
-  const { loading, error, success, orderItems } = addOrder
+  const { error, success, orderItems } = addOrder
 
   useEffect(() => {
     if (success) {
+      dispatch({ type: CART_RESET })
       history.push(`/orders/${orderItems._id}`)
     }
   }, [history, orderItems, success])
+
   const placeOrderHandler = () => {
     dispatch(
       addOrderItems({
@@ -78,7 +81,7 @@ const PlaceOrderScreen = ({ history }) => {
               <ListGroup variant="flush">
                 {cartItems.map((item) => {
                   return (
-                    <ListGroup.Item>
+                    <ListGroup.Item key={item.product_id}>
                       <Row>
                         <Col md={2}>
                           <Image

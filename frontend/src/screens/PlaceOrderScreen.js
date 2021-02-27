@@ -32,7 +32,7 @@ const PlaceOrderScreen = ({ history }) => {
       dispatch({ type: CART_RESET })
       history.push(`/orders/${orderItems._id}`)
     }
-  }, [history, orderItems, success])
+  }, [history, orderItems, success, dispatch])
 
   const placeOrderHandler = () => {
     dispatch(

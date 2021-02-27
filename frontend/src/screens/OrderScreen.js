@@ -42,7 +42,7 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true)
       }
     }
-  }, [orderId, dispatch, successPay])
+  }, [orderId, dispatch, successPay, order])
 
   const onSuccessHandler = (paymentResult) => {
     dispatch(getOrderPay(orderId, paymentResult))

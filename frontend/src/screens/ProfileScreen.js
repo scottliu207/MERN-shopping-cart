@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Form, Button, Row, Col, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
-import { getUserDetails, upadateUserProfile } from "../actions/userActions"
+import { getUserDetails, updateUserProfile } from "../actions/userActions"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 import { getMyOrderList } from "../actions/orderActions"
@@ -50,7 +50,7 @@ const ProfileScreen = ({ history }) => {
       setMessage("新密碼與確認密碼不相同")
     } else {
       dispatch(
-        upadateUserProfile({
+        updateUserProfile({
           _id: user._id,
           name: name,
           email: email,

@@ -8,6 +8,7 @@ import {
 } from "../constants/productConstants"
 import axios from "axios"
 
+// get all products
 export const listProducts = () => async (dispatch) => {
   try {
     dispatch({
@@ -30,6 +31,7 @@ export const listProducts = () => async (dispatch) => {
   }
 }
 
+// get product detail
 export const productListDetails = (id) => async (dispatch) => {
   try {
     dispatch({

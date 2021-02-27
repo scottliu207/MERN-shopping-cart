@@ -18,6 +18,8 @@ Functionality:
 
 ● Checkout process(shipping method, payment method(PayPal)).
 
+● administrator functionality: edit user profile and delete user account.
+
 ## test accounts
 
 ### email : john@example.com

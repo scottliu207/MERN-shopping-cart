@@ -8,10 +8,6 @@ import {
 
 const router = express.Router()
 
-// @desc Fetch all products
-// @route GET /api/products
-// @access Public
-
 router.get("/", getAllProducts)
 router
   .route("/:id")

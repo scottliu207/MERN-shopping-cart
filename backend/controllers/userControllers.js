@@ -128,11 +128,11 @@ const adminDelUser = asyncHandler(async (req, res) => {
   if (user) {
     await user.remove()
     res.json({
-      message: "User removed",
+      message: "已移除使用者",
     })
   } else {
     res.status(404)
-    throw new Error("User do not exist.")
+    throw new Error("找不到使用者")
   }
 })
 
@@ -146,7 +146,7 @@ const adminGetUserDetail = asyncHandler(async (req, res) => {
     res.json(user)
   } else {
     res.status(404)
-    throw new Error("user do not existed.")
+    throw new Error("找不到使用者")
   }
 })
 //@desc Admin update user profile
@@ -167,7 +167,7 @@ const adminUpdatedUserDetail = asyncHandler(async (req, res) => {
     })
   } else {
     res.status(404)
-    throw new Error("user do not existed.")
+    throw new Error("找不到使用者")
   }
 })
 

@@ -21,17 +21,20 @@ const getProductById = asyncHandler(async (req, res) => {
     res.json(product)
   } else {
     res.status(404)
-    throw new Error("Product not found")
+    throw new Error("找不到商品")
   }
 })
 
 const adminGetProducts = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
   if (product) {
-    res.json(product)
+    await product.remove()
+    res.json({
+      message: "商品已移除",
+    })
   } else {
     res.status(404)
-    throw new Error("Product do not Exist")
+    throw new Error("找不到商品")
   }
 })
 

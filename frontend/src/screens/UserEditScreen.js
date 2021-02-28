@@ -26,7 +26,7 @@ const UserEditScreen = ({ match, history }) => {
       dispatch({ type: "ADMIN_UPDATE_RESET" })
       history.push("/admin/userlist")
     } else {
-      if (!user.name || user._id !== userId) {
+      if (!user || user._id !== userId) {
         dispatch(getUserDetails(userId))
       } else {
         setName(user.name)
@@ -49,7 +49,7 @@ const UserEditScreen = ({ match, history }) => {
     )
   }
   return (
-    <FormContainer>
+    <>
       <Row>
         <Col>
           <h1>會員資料修改</h1>
@@ -58,50 +58,48 @@ const UserEditScreen = ({ match, history }) => {
       <Link to="/admin/userlist" className="py-3">
         回上一頁?
       </Link>
-      {loadingUpdated && <Loader />}
-      {errorUpdated && <Message>{errorUpdated}</Message>}
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
-      ) : (
-        <Row className="py-5">
-          <Col md={4} className="mx-auto">
-            <Form onSubmit={submitHandler}>
-              <Form.Group controlId="name">
-                <Form.Label>使用者名稱</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="請輸入名稱"
-                ></Form.Control>
-              </Form.Group>
+      <FormContainer>
+        {loadingUpdated && <Loader />}
+        {errorUpdated && <Message>{errorUpdated}</Message>}
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId="name">
+              <Form.Label>使用者名稱</Form.Label>
+              <Form.Control
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="請輸入名稱"
+              ></Form.Control>
+            </Form.Group>
 
-              <Form.Group controlId="email">
-                <Form.Label>信箱</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="請輸入信箱"
-                ></Form.Control>
-              </Form.Group>
+            <Form.Group controlId="email">
+              <Form.Label>信箱</Form.Label>
+              <Form.Control
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="請輸入信箱"
+              ></Form.Control>
+            </Form.Group>
 
-              <Form.Group controlId="admin">
-                <Form.Check
-                  type="checkbox"
-                  label="設為管理員"
-                  checked={isAdmin}
-                  onChange={(e) => setIsAdmin(e.target.checked)}
-                ></Form.Check>
-              </Form.Group>
-              <Button type="submit">送出</Button>
-            </Form>
-          </Col>
-        </Row>
-      )}
-    </FormContainer>
+            <Form.Group controlId="admin">
+              <Form.Check
+                type="checkbox"
+                label="設為管理員"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+              ></Form.Check>
+            </Form.Group>
+            <Button type="submit">送出</Button>
+          </Form>
+        )}
+      </FormContainer>
+    </>
   )
 }
 

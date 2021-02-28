@@ -2,26 +2,34 @@ import React, { useEffect } from "react"
 import { Row, Col, Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { LinkContainer } from "react-router-bootstrap"
-import { listProducts } from "../actions/productActions"
+import { listProducts, deleteProduct } from "../actions/productActions"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 
 const ProductListScreen = ({ history }) => {
+  const dispatch = useDispatch()
+
   const { userInfo } = useSelector((state) => state.userLogin)
   const productList = useSelector((state) => state.productList)
+  const productDelete = useSelector((state) => state.productDelete)
+
   const { loading, error, products } = productList
-  const dispatch = useDispatch()
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = productDelete
+
   useEffect(() => {
-    console.log(userInfo)
     if (userInfo && userInfo.isAdmin) {
       dispatch(listProducts())
     } else {
       history.push("/login")
     }
-  }, [dispatch, userInfo])
+  }, [dispatch, userInfo, history, successDelete])
 
   const deleteHandler = (id) => {
-    console.log(id)
+    dispatch(deleteProduct(id))
   }
   return (
     <>
@@ -37,6 +45,8 @@ const ProductListScreen = ({ history }) => {
           </LinkContainer>
         </Col>
       </Row>
+      {loadingDelete && <Loader />}
+      {errorDelete && <Message>{errorDelete}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (
@@ -71,7 +81,9 @@ const ProductListScreen = ({ history }) => {
                     <td>{product.category}</td>
                     <td>{product.brand}</td>
                     <td>
-                      <LinkContainer to="/">
+                      <LinkContainer
+                        to={`/admin/productlist/${product._id}/edit`}
+                      >
                         <Button size="sm" variant="secondery">
                           <i className="fas fa-edit"></i>
                         </Button>

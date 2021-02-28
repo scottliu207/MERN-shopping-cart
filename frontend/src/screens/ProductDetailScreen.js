@@ -1,13 +1,16 @@
+// Admin only, product detail edit screen.
+
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Row, Col, Form, Button } from "react-bootstrap"
-import { Link } from "react-router-dom"
-import FormContainer from "../components/FormContainer"
-import { productListDetails } from "../actions/productActions"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
+import FormContainer from "../components/FormContainer"
+import { Link } from "react-router-dom"
+import { productListDetails, updateProduct } from "../actions/productActions"
+import { PRODUCT_UPDATE_RESET } from "../constants/productConstants"
 
-const ProductDetailScreen = ({ match }) => {
+const ProductDetailScreen = ({ match, history }) => {
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
   const [countInStock, setCountInStock] = useState(0)
@@ -17,25 +20,53 @@ const ProductDetailScreen = ({ match }) => {
 
   const dispatch = useDispatch()
   const productId = match.params.id
+  const { userInfo } = useSelector((state) => state.userLogin)
   const productDetails = useSelector((state) => state.productDetails)
+  const productUpdate = useSelector((state) => state.productUpdate)
   const { loading, error, product } = productDetails
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = productUpdate
 
   useEffect(() => {
-    if (!product || !product.name || productId !== product._id) {
-      dispatch(productListDetails(productId))
+    if (userInfo && userInfo.isAdmin) {
+      if (successUpdate) {
+        history.push("/admin/productlist")
+        dispatch({
+          type: PRODUCT_UPDATE_RESET,
+        })
+      } else {
+        if (!product || !product.name || productId !== product._id) {
+          dispatch(productListDetails(productId))
+        } else {
+          setName(product.name)
+          setPrice(product.price)
+          setCategory(product.category)
+          setBrand(product.brand)
+          setCountInStock(product.countInStock)
+          setDescription(product.description)
+        }
+      }
     } else {
-      setName(product.name)
-      setPrice(product.price)
-      setCategory(product.category)
-      setBrand(product.brand)
-      setCountInStock(product.countInStock)
-      setDescription(product.description)
+      history.push("/login")
     }
-  }, [dispatch, product, productId])
+  }, [dispatch, product, productId, history, successUpdate, userInfo])
 
   const submitHandler = (e) => {
     e.preventDefault()
-    console.log("submit")
+    dispatch(
+      updateProduct({
+        _id: product._id,
+        name,
+        price,
+        countInStock,
+        category,
+        brand,
+        description,
+      })
+    )
   }
   return (
     <>
@@ -46,6 +77,8 @@ const ProductDetailScreen = ({ match }) => {
       </Row>
       <Link to="/admin/productlist">回上一頁?</Link>
       <FormContainer>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (

@@ -25,7 +25,31 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 })
 
-const adminGetProducts = asyncHandler(async (req, res) => {
+// @desc Admin update product
+// @route PUT /api/products:/id
+// @access Private/admin
+
+const adminUpdateProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id)
+  if (product) {
+    product.name = req.body.name || product.name
+    product.price = req.body.price || product.price
+    product.countInStock = req.body.countInStock || product.countInStock
+    product.category = req.body.category || product.category
+    product.brand = req.body.brand || product.brand
+
+    const updatedProduct = await product.save()
+    res.json(updatedProduct)
+  } else {
+    res.status(404)
+    throw new Error("找不到商品")
+  }
+})
+
+// @desc Admin removes product
+// @route DELETE /api/products:/id
+// @access Private/admin
+const adminDeleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
   if (product) {
     await product.remove()
@@ -38,4 +62,9 @@ const adminGetProducts = asyncHandler(async (req, res) => {
   }
 })
 
-export { getAllProducts, getProductById, adminGetProducts }
+export {
+  getAllProducts,
+  getProductById,
+  adminDeleteProduct,
+  adminUpdateProduct,
+}

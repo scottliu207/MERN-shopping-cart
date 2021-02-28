@@ -8,10 +8,13 @@ import {
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DELETE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
 } from "../constants/productConstants"
 import axios from "axios"
 
-// get all products
+// Get all products action
 export const listProducts = () => async (dispatch) => {
   try {
     dispatch({
@@ -34,7 +37,7 @@ export const listProducts = () => async (dispatch) => {
   }
 }
 
-// get product detail
+// Get product detail action
 export const productListDetails = (id) => async (dispatch) => {
   try {
     dispatch({
@@ -58,6 +61,7 @@ export const productListDetails = (id) => async (dispatch) => {
   }
 }
 
+// Admin delete product action
 export const deleteProduct = (id) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -82,6 +86,41 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+// Admin update product action
+
+export const updateProduct = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_UPDATE_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    await axios.put(`/api/products/${product._id}`, product, config)
+
+    dispatch({
+      type: PRODUCT_UPDATE_SUCCESS,
+    })
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

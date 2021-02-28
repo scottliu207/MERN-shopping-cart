@@ -3,7 +3,8 @@ import protect, { admin } from "../middleware/authMiddleware.js"
 import {
   getAllProducts,
   getProductById,
-  adminGetProducts,
+  adminDeleteProduct,
+  adminUpdateProduct,
 } from "../controllers/productControllers.js"
 
 const router = express.Router()
@@ -12,6 +13,7 @@ router.get("/", getAllProducts)
 router
   .route("/:id")
   .get(getProductById)
-  .delete(protect, admin, adminGetProducts)
+  .delete(protect, admin, adminDeleteProduct)
+  .put(protect, admin, adminUpdateProduct)
 
 export default router

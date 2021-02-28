@@ -1,3 +1,5 @@
+//Admin only, get product list screen.
+
 import React, { useEffect } from "react"
 import { Row, Col, Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
@@ -65,10 +67,11 @@ const ProductListScreen = ({ history }) => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Name</th>
-                  <th>Price</th>
-                  <th>Category</th>
-                  <th>Brand</th>
+                  <th>名稱</th>
+                  <th>價格</th>
+                  <th>庫存</th>
+                  <th>分類</th>
+                  <th>品牌</th>
                   <th colSpan={2}>Edit</th>
                 </tr>
               </thead>
@@ -78,6 +81,7 @@ const ProductListScreen = ({ history }) => {
                     <td>{product._id}</td>
                     <td>{product.name}</td>
                     <td>$ {product.price}</td>
+                    <td>{product.countInStock}</td>
                     <td>{product.category}</td>
                     <td>{product.brand}</td>
                     <td>

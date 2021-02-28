@@ -8,8 +8,13 @@ import {
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DELETE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_UPDATE_RESET,
 } from "../constants/productConstants"
 
+// Get all products reducer
 export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
     case PRODUCT_LIST_REQUEST:
@@ -32,6 +37,7 @@ export const productListReducer = (state = { products: [] }, action) => {
   }
 }
 
+// Get product detail reducer
 export const productDetailReducer = (
   state = { product: { reviews: [] } },
   action
@@ -57,6 +63,7 @@ export const productDetailReducer = (
   }
 }
 
+// Admin delete product reducer
 export const productDeleteReducer = (state = {}, action) => {
   switch (action.type) {
     case PRODUCT_DELETE_REQUEST:
@@ -74,6 +81,30 @@ export const productDeleteReducer = (state = {}, action) => {
         error: action.payload,
       }
 
+    default:
+      return state
+  }
+}
+
+// Admin update product reducer
+export const productUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_UPDATE_REQUEST:
+      return {
+        loading: true,
+      }
+    case PRODUCT_UPDATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      }
+    case PRODUCT_UPDATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case PRODUCT_UPDATE_RESET:
+      return {}
     default:
       return state
   }

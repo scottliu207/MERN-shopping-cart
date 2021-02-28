@@ -18,7 +18,11 @@ Functionality:
 
 ● Checkout process(shipping method, payment method(PayPal)).
 
-● Administrator functionality: edit user profile and delete user account.
+● Administrator:
+
+    1. edit user profile and delete user account.
+
+    2. edit screen and delete product.
 
 ## test accounts
 

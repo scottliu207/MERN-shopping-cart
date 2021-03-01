@@ -8,13 +8,17 @@ import Message from "../components/Message"
 import FormContainer from "../components/FormContainer"
 import { Link } from "react-router-dom"
 import { productListDetails, updateProduct } from "../actions/productActions"
-import { PRODUCT_UPDATE_RESET } from "../constants/productConstants"
+import {
+  PRODUCT_UPDATE_RESET,
+  PRODUCT_DETAILS_RESET,
+} from "../constants/productConstants"
 
 const ProductDetailScreen = ({ match, history }) => {
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
-  const [countInStock, setCountInStock] = useState(0)
+  const [countInStock, setCountInStock] = useState("")
   const [category, setCategory] = useState("")
+  const [image, setImage] = useState("")
   const [brand, setBrand] = useState("")
   const [description, setDescription] = useState("")
 
@@ -37,6 +41,9 @@ const ProductDetailScreen = ({ match, history }) => {
         dispatch({
           type: PRODUCT_UPDATE_RESET,
         })
+        dispatch({
+          type: PRODUCT_DETAILS_RESET,
+        })
       } else {
         if (!product || !product.name || productId !== product._id) {
           dispatch(productListDetails(productId))
@@ -45,6 +52,7 @@ const ProductDetailScreen = ({ match, history }) => {
           setPrice(product.price)
           setCategory(product.category)
           setBrand(product.brand)
+          setImage(product.image)
           setCountInStock(product.countInStock)
           setDescription(product.description)
         }
@@ -62,6 +70,7 @@ const ProductDetailScreen = ({ match, history }) => {
         name,
         price,
         countInStock,
+        image,
         category,
         brand,
         description,
@@ -75,7 +84,9 @@ const ProductDetailScreen = ({ match, history }) => {
           <h1>商品</h1>
         </Col>
       </Row>
-      <Link to="/admin/productlist">回上一頁?</Link>
+      <Link to="/admin/productlist" className="btn btn-light btn-sm">
+        回上一頁?
+      </Link>
       <FormContainer>
         {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
@@ -93,6 +104,7 @@ const ProductDetailScreen = ({ match, history }) => {
                 placeholder="請輸入商品名稱"
               ></Form.Control>
             </Form.Group>
+
             <Form.Group>
               <Form.Label>價格</Form.Label>
               <Form.Control
@@ -102,16 +114,27 @@ const ProductDetailScreen = ({ match, history }) => {
                 placeholder="請輸入商品價格"
               ></Form.Control>
             </Form.Group>
+
             <Form.Group>
-              <Form.Group>
-                <Form.Label>庫存</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={countInStock}
-                  onChange={(e) => setCountInStock(e.target.value)}
-                  placeholder="請輸入商品庫存"
-                ></Form.Control>
-              </Form.Group>
+              <Form.Label>庫存</Form.Label>
+              <Form.Control
+                type="number"
+                value={countInStock}
+                onChange={(e) => setCountInStock(e.target.value)}
+                placeholder="請輸入商品庫存"
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>圖片</Form.Label>
+              <Form.Control
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                placeholder="請輸入商品分類"
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group>
               <Form.Label>分類</Form.Label>
               <Form.Control
                 value={category}
@@ -119,6 +142,7 @@ const ProductDetailScreen = ({ match, history }) => {
                 placeholder="請輸入商品分類"
               ></Form.Control>
             </Form.Group>
+
             <Form.Group>
               <Form.Label>品牌</Form.Label>
               <Form.Control
@@ -127,6 +151,7 @@ const ProductDetailScreen = ({ match, history }) => {
                 placeholder="請輸入商品品牌"
               ></Form.Control>
             </Form.Group>
+
             <Form.Group>
               <Form.Label>敘述</Form.Label>
               <Form.Control

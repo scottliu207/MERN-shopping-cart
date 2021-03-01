@@ -4,15 +4,21 @@ import React, { useEffect } from "react"
 import { Row, Col, Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { LinkContainer } from "react-router-bootstrap"
-import { listProducts, deleteProduct } from "../actions/productActions"
+import {
+  listProducts,
+  deleteProduct,
+  createProduct,
+} from "../actions/productActions"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants"
 
 const ProductListScreen = ({ history }) => {
   const dispatch = useDispatch()
 
   const { userInfo } = useSelector((state) => state.userLogin)
   const productList = useSelector((state) => state.productList)
+  const productCreate = useSelector((state) => state.productCreate)
   const productDelete = useSelector((state) => state.productDelete)
 
   const { loading, error, products } = productList
@@ -21,6 +27,12 @@ const ProductListScreen = ({ history }) => {
     error: errorDelete,
     success: successDelete,
   } = productDelete
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+    product,
+  } = productCreate
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -28,10 +40,19 @@ const ProductListScreen = ({ history }) => {
     } else {
       history.push("/login")
     }
-  }, [dispatch, userInfo, history, successDelete])
+    if (successCreate) {
+      history.push(`/admin/productlist/${product._id}/edit`)
+      dispatch({ type: PRODUCT_CREATE_RESET })
+    }
+  }, [dispatch, userInfo, history, successDelete, product, successCreate])
 
   const deleteHandler = (id) => {
-    dispatch(deleteProduct(id))
+    if (window.confirm("確定要刪除商品嗎?")) {
+      dispatch(deleteProduct(id))
+    }
+  }
+  const createHandler = () => {
+    dispatch(createProduct())
   }
   return (
     <>
@@ -40,15 +61,17 @@ const ProductListScreen = ({ history }) => {
           <h1>商品</h1>
         </Col>
         <Col className="text-right">
-          <LinkContainer to="/admin/product">
-            <Button>
-              <i className="fas fa-plus"></i> Create new Item
-            </Button>
-          </LinkContainer>
+          <Button onClick={createHandler}>
+            <i className="fas fa-plus"></i> 新增商品
+          </Button>
         </Col>
       </Row>
+      {loadingCreate && <Loader />}
+      {errorCreate && <Message variant="danger">{error}</Message>}
+
       {loadingDelete && <Loader />}
       {errorDelete && <Message>{errorDelete}</Message>}
+
       {loading ? (
         <Loader />
       ) : error ? (

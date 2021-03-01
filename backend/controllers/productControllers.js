@@ -25,18 +25,48 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc Admin create product
+// @route POST /api/products
+// @access Private/admin
+export const adminCreateProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    price,
+    image,
+    countInStock,
+    category,
+    brand,
+    description,
+  } = req.body
+
+  const newProduct = await Product.create({
+    name: "Sample",
+    price: 0,
+    image: "/images/sample.jpg",
+    countInStock: 0,
+    category: "Sample",
+    brand: "Sam",
+    description: "This is sample item",
+    user: req.user._id,
+  })
+
+  res.json(newProduct)
+})
+
 // @desc Admin update product
 // @route PUT /api/products:/id
 // @access Private/admin
 
 const adminUpdateProduct = asyncHandler(async (req, res) => {
+  const { name, price, countInStock, category, brand } = req.body
   const product = await Product.findById(req.params.id)
+
   if (product) {
-    product.name = req.body.name || product.name
-    product.price = req.body.price || product.price
-    product.countInStock = req.body.countInStock || product.countInStock
-    product.category = req.body.category || product.category
-    product.brand = req.body.brand || product.brand
+    product.name = name || product.name
+    product.price = price || product.price
+    product.countInStock = countInStock || product.countInStock
+    product.category = category || product.category
+    product.brand = brand || product.brand
 
     const updatedProduct = await product.save()
     res.json(updatedProduct)

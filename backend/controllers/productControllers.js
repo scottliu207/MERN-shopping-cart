@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
 
-// @desc Fetch all products
+// @desc Get all products
 // @route GET /api/products
 // @access Public
 
@@ -10,7 +10,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   res.json(products)
 })
 
-// @desc Fetch single product
+// @desc Get single product
 // @route GET /api/products/:id
 // @access Public
 
@@ -25,20 +25,51 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc Admin create product
-// @route POST /api/products
-// @access Private/admin
-export const adminCreateProduct = asyncHandler(async (req, res) => {
-  const {
-    name,
-    price,
-    image,
-    countInStock,
-    category,
-    brand,
-    description,
-  } = req.body
+// @desc Create a review
+// @route POST /api/products/:id
+// @access Private
 
+const createProductReview = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id)
+
+  if (product) {
+    const { rating, comment } = req.body
+    const review = {
+      name: product.name,
+      rating,
+      comment,
+      user: req.user._id,
+    }
+
+    //check if user already reviewed.
+    if (
+      product.reviews.find((r) => r.user.toString() == req.user._id.toString())
+    ) {
+      res.status(400)
+      throw new Error("您已經留過評論")
+    } else {
+      product.reviews.push(review)
+
+      // calculate new num of reviews and rating.
+      product.numReviews = product.reviews.length
+      product.rating = product.reviews.reduce(
+        (acc, r) => (acc + r.rating) / product.numReviews,
+        0
+      )
+
+      const newReview = await product.save()
+      res.status(201).json(newReview)
+    }
+  } else {
+    res.status(404)
+    throw new Error("找不到商品")
+  }
+})
+
+// @ desc Create product, admin only.
+// @ route POST /api/products
+// @ access Private/admin
+const adminCreateProduct = asyncHandler(async (req, res) => {
   const newProduct = await Product.create({
     name: "Sample",
     price: 0,
@@ -53,8 +84,8 @@ export const adminCreateProduct = asyncHandler(async (req, res) => {
   res.json(newProduct)
 })
 
-// @desc Admin update product
-// @route PUT /api/products:/id
+// @desc Update product, admin only.
+// @route PUT /api/products/:id
 // @access Private/admin
 
 const adminUpdateProduct = asyncHandler(async (req, res) => {
@@ -87,8 +118,8 @@ const adminUpdateProduct = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc Admin removes product
-// @route DELETE /api/products:/id
+// @desc Removes product, admin only.
+// @route DELETE /api/products/:id
 // @access Private/admin
 const adminDeleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
@@ -106,6 +137,8 @@ const adminDeleteProduct = asyncHandler(async (req, res) => {
 export {
   getAllProducts,
   getProductById,
-  adminDeleteProduct,
+  createProductReview,
+  adminCreateProduct,
   adminUpdateProduct,
+  adminDeleteProduct,
 }

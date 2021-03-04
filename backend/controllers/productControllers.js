@@ -35,8 +35,8 @@ const createProductReview = asyncHandler(async (req, res) => {
   if (product) {
     const { rating, comment } = req.body
     const review = {
-      name: product.name,
-      rating,
+      name: req.user.name,
+      rating: Number(rating),
       comment,
       user: req.user._id,
     }
@@ -52,10 +52,9 @@ const createProductReview = asyncHandler(async (req, res) => {
 
       // calculate new num of reviews and rating.
       product.numReviews = product.reviews.length
-      product.rating = product.reviews.reduce(
-        (acc, r) => (acc + r.rating) / product.numReviews,
-        0
-      )
+      product.rating =
+        product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+        product.numReviews
 
       const newReview = await product.save()
       res.status(201).json(newReview)

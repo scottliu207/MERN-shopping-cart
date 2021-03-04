@@ -53,7 +53,6 @@ const OrderScreen = ({ match, history }) => {
       }
       document.body.appendChild(script)
     }
-    addPayPal()
 
     if (!order || successPay || successDeliver || order._id !== orderId) {
       dispatch({ type: ORDER_PAY_RESET })
@@ -69,7 +68,11 @@ const OrderScreen = ({ match, history }) => {
   }, [orderId, dispatch, successPay, order, userInfo, successDeliver, history])
 
   const onSuccessHandler = (paymentResult) => {
+    console.log(paymentResult)
     dispatch(getOrderPay(orderId, paymentResult))
+    return alert(
+      `${paymentResult.payer.name.given_name}的訂單交易完成，已通知賣家出貨。`
+    )
   }
   return (
     <Container>
@@ -149,13 +152,14 @@ const OrderScreen = ({ match, history }) => {
               <ListGroup.Item>運費:$ {order.shippingPrice}</ListGroup.Item>
               <ListGroup.Item>稅金:$ {order.taxPrice}</ListGroup.Item>
               <ListGroup.Item>總計:$ {order.totalPrice}</ListGroup.Item>
-              {!order.isPaid && (
+              {userInfo && !userInfo.isAdmin && !order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
                   {!sdkReady ? (
                     <Loader />
                   ) : (
                     <PayPalButton
+                      shippingPreference="NO_SHIPPING"
                       amount={order.totalPrice}
                       onSuccess={onSuccessHandler}
                       currency="TWD"

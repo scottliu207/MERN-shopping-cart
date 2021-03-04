@@ -3,12 +3,9 @@ import dotenv from "dotenv"
 import connectDB from "./config/db.js"
 import productRoutes from "./routes/productRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
+import uploadsRoutes from "./routes/uploadsRoute.js"
 import orderRoutes from "./routes/orderRoutes.js"
-import {
-  errorHandler,
-  pageNotFound,
-  productCreateErrorHandler,
-} from "./middleware/errorMiddleware.js"
+import { errorHandler, pageNotFound } from "./middleware/errorMiddleware.js"
 import path from "path"
 
 dotenv.config()
@@ -26,8 +23,12 @@ app.get("/api/config/paypal", (req, res) =>
 app.use("/api/products", productRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/upload", uploadsRoutes)
 
 const __dirname = path.resolve()
+
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/build")))
 
@@ -41,7 +42,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(pageNotFound)
-app.use(productCreateErrorHandler)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000

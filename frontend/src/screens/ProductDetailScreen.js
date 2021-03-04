@@ -12,6 +12,7 @@ import {
   PRODUCT_UPDATE_RESET,
   PRODUCT_DETAILS_RESET,
 } from "../constants/productConstants"
+import axios from "axios"
 
 const ProductDetailScreen = ({ match, history }) => {
   const [name, setName] = useState("")
@@ -21,6 +22,7 @@ const ProductDetailScreen = ({ match, history }) => {
   const [image, setImage] = useState("")
   const [brand, setBrand] = useState("")
   const [description, setDescription] = useState("")
+  const [uploading, setUploading] = useState(false)
 
   const dispatch = useDispatch()
   const productId = match.params.id
@@ -77,6 +79,30 @@ const ProductDetailScreen = ({ match, history }) => {
       })
     )
   }
+
+  const uploadHandler = async (e) => {
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append("image", file)
+
+    setUploading(true)
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+
+      const { data } = await axios.post("/api/upload", formData, config)
+      console.log(data)
+      setImage(data)
+      setUploading(false)
+    } catch (error) {
+      setUploading(false)
+      console.log(error)
+    }
+  }
   return (
     <>
       <Row>
@@ -130,8 +156,9 @@ const ProductDetailScreen = ({ match, history }) => {
               <Form.Control
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-                placeholder="請輸入商品分類"
+                placeholder="請輸入商品連結"
               ></Form.Control>
+              <Form.File onChange={uploadHandler}></Form.File>
             </Form.Group>
 
             <Form.Group>
@@ -158,7 +185,7 @@ const ProductDetailScreen = ({ match, history }) => {
                 as="textarea"
                 rows={5}
                 value={description}
-                onChange={(e) => setBrand(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 placeholder="請輸入商品敘述"
               ></Form.Control>
             </Form.Group>

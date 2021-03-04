@@ -1,8 +1,8 @@
 import Order from "../models/orderModel.js"
 import asyncHandler from "express-async-handler"
 
-// @desc add order to  database
-// @route POST /api/order
+// @ desc add order to  database
+// @ route POST /api/order
 // @ access Private
 const addOrder = asyncHandler(async (req, res) => {
   const {
@@ -17,7 +17,7 @@ const addOrder = asyncHandler(async (req, res) => {
 
   if (orderItems && orderItems.length === 0) {
     res.status(400)
-    throw new Error("No order items")
+    throw new Error("沒有商品")
   } else {
     const order = new Order({
       orderItems: orderItems,
@@ -29,7 +29,6 @@ const addOrder = asyncHandler(async (req, res) => {
       taxPrice: taxPrice,
       totalPrice: totalPrice,
     })
-    console.log(order)
 
     const createOrder = await order.save()
     res.status(201)
@@ -37,8 +36,8 @@ const addOrder = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc get order detail from database
-// @route GET /api/order/:id
+// @ desc get order detail from database
+// @ route GET /api/order/:id
 // @ access Private
 
 const getOrderById = asyncHandler(async (req, res) => {
@@ -54,8 +53,8 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc update order to paid
-// @route PUT /api/order/:id/pay
+// @ desc update order to pay
+// @ route PUT /api/order/:id/pay
 // @ access Private
 
 const updateOrderToPaid = asyncHandler(async (req, res) => {
@@ -77,11 +76,51 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc get user's order
-// @route GET /api/orders/myorder
+// @ desc get user order
+// @ route GET /api/orders/myorder
 // @ access Private
 const getMyOrder = asyncHandler(async (req, res) => {
   const order = await Order.find({ user: req.user.id })
   res.json(order)
 })
-export { addOrder, getOrderById, updateOrderToPaid, getMyOrder }
+
+// @ desc get all orders
+// @ route GET /api/orders
+// @ access Private/admin
+const getOrderList = asyncHandler(async (req, res) => {
+  const orders = await Order.find({}).populate("user", "id name")
+  if (orders) {
+    res.json(orders)
+  } else {
+    res.status(404)
+    throw new Error("找不到任何訂單")
+  }
+})
+
+// @ desc Update order to deliver
+// @ route PUT /api/orders/:id/deliver
+// @ access Private/admin
+
+const updateOrderToDeliver = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id)
+  console.log(order)
+  if (order) {
+    order.isDelivered = true
+    order.deliveredAt = Date.now()
+    const updatedOrder = await order.save()
+    console.log(updatedOrder)
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error("找不到訂單")
+  }
+})
+
+export {
+  addOrder,
+  getOrderById,
+  updateOrderToPaid,
+  getMyOrder,
+  getOrderList,
+  updateOrderToDeliver,
+}

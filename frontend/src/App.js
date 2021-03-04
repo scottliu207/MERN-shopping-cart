@@ -17,7 +17,7 @@ import UserListScreen from "./screens/UserListScreen"
 import UserEditScreen from "./screens/UserEditScreen"
 import ProductListScreen from "./screens/ProductListScreen"
 import ProductDetailScreen from "./screens/ProductDetailScreen"
-import ProductCreateScreen from "./screens/ProductCreateScreen"
+import OrderListScreen from "./screens/OrderListScreen"
 
 function App() {
   return (
@@ -44,10 +44,8 @@ function App() {
             component={ProductListScreen}
             exact
           />
-          <Route
-            path="/admin/productlist/create"
-            component={ProductCreateScreen}
-          />
+          <Route path="/admin/orderlist" component={OrderListScreen} />
+
           <Route path="/register" component={RegisterScreen} />
           <Route path="/profile" component={ProfileScreen} />
         </Container>

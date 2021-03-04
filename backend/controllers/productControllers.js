@@ -6,7 +6,20 @@ import Product from "../models/productModel.js"
 // @access Public
 
 const getAllProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({})
+  // use keyword to search product with regular expression.
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          //mongoDB syntax
+          // {$regex: /pattern/ , $options: /'i' for case-insensitivity/ }
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {}
+
+  // find product with keyword if it was provided, otherwise find all.
+  const products = await Product.find(keyword)
   res.json(products)
 })
 

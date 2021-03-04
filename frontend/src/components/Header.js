@@ -1,4 +1,6 @@
 import React from "react"
+import Search from "./Search"
+import { Route } from "react-router-dom"
 import { Nav, Navbar, Container, NavDropdown } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
@@ -20,6 +22,8 @@ const Header = () => {
           <LinkContainer to="/">
             <Navbar.Brand>MaxMMA</Navbar.Brand>
           </LinkContainer>
+          {/* becasue we can't directly access route prop history, need to use render prop to pass it down. */}
+          <Route render={({ history }) => <Search history={history} />} />
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

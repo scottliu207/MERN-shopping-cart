@@ -6,6 +6,8 @@ Built with React/Redux, Express and MongoDB.
 
 Functionality:
 
+● Product search.
+
 ● User sign up and login.
 
 ● User profile page.
@@ -16,13 +18,17 @@ Functionality:
 
 ● Place an order.
 
-● Checkout process(shipping method, payment method(PayPal)).
+● Checkout process
+
+● PayPal payment method.(sandbox)
 
 ● Administrator:
 
-    1. edit user profile and delete user account.
+    1. Edit user profile and delete user account.
 
-    2. edit screen and delete product.
+    2. Edit screen and delete product.
+
+    3. Show order details and mark as deliverd.
 
 ## test accounts
 

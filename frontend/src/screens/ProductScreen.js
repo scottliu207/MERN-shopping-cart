@@ -52,7 +52,6 @@ const ProductScreen = ({ match, history }) => {
       comment,
     }
     dispatch(createProductReview(productId, review))
-    console.log(review)
   }
 
   return (

@@ -10,7 +10,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   const keyword = req.query.keyword
     ? {
         name: {
-          //mongoDB syntax
+          // mongoDB syntax
           // {$regex: /pattern/ , $options: /'i' for case-insensitivity/ }
           $regex: req.query.keyword,
           $options: "i",

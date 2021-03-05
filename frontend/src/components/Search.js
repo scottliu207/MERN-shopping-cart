@@ -8,7 +8,7 @@ const Search = ({ history }) => {
     e.preventDefault()
 
     if (keyword) {
-      history.push(`/${keyword}`)
+      history.push(`/search/${keyword}`)
       setKeyword("")
     } else {
       history.push("/")

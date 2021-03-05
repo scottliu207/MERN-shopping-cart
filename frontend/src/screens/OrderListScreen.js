@@ -1,9 +1,9 @@
 import React, { useEffect } from "react"
 import { Row, Col, Button, Table } from "react-bootstrap"
-import { Link } from "react-router-dom"
 import { LinkContainer } from "react-router-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { getOrderList } from "../actions/orderActions"
+import PaginationContainer from "../components/PaginationContainer"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 
@@ -11,7 +11,6 @@ const OrderListScreen = () => {
   const dispatch = useDispatch()
   const orderList = useSelector((state) => state.getOrderList)
   const { loading, error, orders } = orderList
-  console.log(orders)
 
   useEffect(() => {
     dispatch(getOrderList())
@@ -31,7 +30,14 @@ const OrderListScreen = () => {
       ) : (
         <Row>
           <Col>
-            <Table striped hover responsive bordered className="text-center">
+            <Table
+              size="sm"
+              striped
+              hover
+              responsive
+              bordered
+              className="text-center"
+            >
               <thead>
                 <tr>
                   <th>編號</th>
@@ -74,7 +80,7 @@ const OrderListScreen = () => {
                     </td>
                     <td>
                       <LinkContainer to={`/orders/${order._id}`}>
-                        <Button variant="secondery" clasName="btn-sm">
+                        <Button variant="secondery" className="btn-sm">
                           訂單細節
                         </Button>
                       </LinkContainer>

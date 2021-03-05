@@ -6,7 +6,7 @@ import Product from "../models/productModel.js"
 // @access Public
 
 const getAllProducts = asyncHandler(async (req, res) => {
-  // use keyword to search product with regular expression.
+  // Use regular expression to search product with keyword .
   const keyword = req.query.keyword
     ? {
         name: {
@@ -18,9 +18,19 @@ const getAllProducts = asyncHandler(async (req, res) => {
       }
     : {}
 
+  const pagePrdoucts = 4 // define how many products in a page.
+  const page = req.query.page // current page.
+
+  const productCount = await Product.count(keyword) // product counts.
+
   // find product with keyword if it was provided, otherwise find all.
   const products = await Product.find(keyword)
-  res.json(products)
+    .limit(pagePrdoucts)
+    .skip(pagePrdoucts * (page - 1)) //calculate which product should be render in that page.
+
+  const pages = Math.ceil(productCount / pagePrdoucts) // calculate total pages.
+
+  res.json({ products, pages })
 })
 
 // @desc Get single product

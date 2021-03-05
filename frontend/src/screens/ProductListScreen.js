@@ -11,17 +11,20 @@ import {
 } from "../actions/productActions"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
+import PaginationContainer from "../components/PaginationContainer"
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants"
 
-const ProductListScreen = ({ history }) => {
+const ProductListScreen = ({ history, match }) => {
   const dispatch = useDispatch()
+
+  const pageNum = match.params.pageNum
 
   const { userInfo } = useSelector((state) => state.userLogin)
   const productList = useSelector((state) => state.productList)
   const productCreate = useSelector((state) => state.productCreate)
   const productDelete = useSelector((state) => state.productDelete)
 
-  const { loading, error, products } = productList
+  const { loading, error, products, pages } = productList
   const {
     loading: loadingDelete,
     error: errorDelete,
@@ -36,7 +39,7 @@ const ProductListScreen = ({ history }) => {
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(listProducts())
+      dispatch(listProducts("", pageNum))
     } else {
       history.push("/login")
     }
@@ -44,7 +47,15 @@ const ProductListScreen = ({ history }) => {
       history.push(`/admin/productlist/${product._id}/edit`)
       dispatch({ type: PRODUCT_CREATE_RESET })
     }
-  }, [dispatch, userInfo, history, successDelete, product, successCreate])
+  }, [
+    dispatch,
+    userInfo,
+    history,
+    successDelete,
+    product,
+    successCreate,
+    pageNum,
+  ])
 
   const deleteHandler = (id) => {
     if (window.confirm("確定要刪除商品嗎?")) {
@@ -77,60 +88,63 @@ const ProductListScreen = ({ history }) => {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <Row className="py-3">
-          <Col>
-            <Table
-              responsive
-              striped
-              bordered
-              hover
-              size="sm"
-              className="text-center"
-            >
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>名稱</th>
-                  <th>價格</th>
-                  <th>庫存</th>
-                  <th>分類</th>
-                  <th>品牌</th>
-                  <th colSpan={2}>Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product._id}>
-                    <td>{product._id}</td>
-                    <td>{product.name}</td>
-                    <td>$ {product.price}</td>
-                    <td>{product.countInStock}</td>
-                    <td>{product.category}</td>
-                    <td>{product.brand}</td>
-                    <td>
-                      <LinkContainer
-                        to={`/admin/productlist/${product._id}/edit`}
-                      >
-                        <Button size="sm" variant="secondery">
-                          <i className="fas fa-edit"></i>
-                        </Button>
-                      </LinkContainer>
-                    </td>
-                    <td>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => deleteHandler(product._id)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </Button>
-                    </td>
+        <>
+          <Row className="py-3">
+            <Col>
+              <Table
+                responsive
+                striped
+                bordered
+                hover
+                size="sm"
+                className="text-center"
+              >
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>名稱</th>
+                    <th>價格</th>
+                    <th>庫存</th>
+                    <th>分類</th>
+                    <th>品牌</th>
+                    <th colSpan={2}>Edit</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
+                </thead>
+                <tbody>
+                  {products.map((product) => (
+                    <tr key={product._id}>
+                      <td>{product._id}</td>
+                      <td>{product.name}</td>
+                      <td>$ {product.price}</td>
+                      <td>{product.countInStock}</td>
+                      <td>{product.category}</td>
+                      <td>{product.brand}</td>
+                      <td>
+                        <LinkContainer
+                          to={`/admin/productlist/${product._id}/edit`}
+                        >
+                          <Button size="sm" variant="secondery">
+                            <i className="fas fa-edit"></i>
+                          </Button>
+                        </LinkContainer>
+                      </td>
+                      <td>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => deleteHandler(product._id)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Col>
+          </Row>
+          <PaginationContainer page={pageNum} pages={pages} isAdmin={true} />
+        </>
       )}
     </>
   )

@@ -5,16 +5,19 @@ import Loader from "../components/Loader"
 import Message from "../components/Message"
 import { useDispatch, useSelector } from "react-redux"
 import { listProducts } from "../actions/productActions"
+import PaginationContainer from "../components/PaginationContainer"
 
 const HomeScreen = ({ match }) => {
   const dispatch = useDispatch()
   const keyword = match.params.keyword
+  const pageNum = match.params.pageNum
+
   const productList = useSelector((state) => state.productList)
-  const { loading, error, products } = productList
+  const { loading, error, products, pages } = productList
 
   useEffect(() => {
-    dispatch(listProducts(keyword))
-  }, [dispatch, keyword])
+    dispatch(listProducts(keyword, pageNum))
+  }, [dispatch, keyword, pageNum])
 
   return (
     <div>
@@ -34,6 +37,7 @@ const HomeScreen = ({ match }) => {
               </Col>
             ))}
           </Row>
+          <PaginationContainer keyword={keyword} pages={pages} page={pageNum} />
         </>
       )}
     </div>

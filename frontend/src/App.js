@@ -43,10 +43,21 @@ function App() {
             component={ProductListScreen}
             exact
           />
+          <Route
+            path="/admin/productlist/page/:pageNum"
+            component={ProductListScreen}
+            exact
+          />
           <Route path="/admin/orderlist" component={OrderListScreen} />
           <Route path="/register" component={RegisterScreen} />
           <Route path="/profile" component={ProfileScreen} />
-          <Route path="/search/:keyword" component={HomeScreen} />
+          <Route path="/search/:keyword" component={HomeScreen} exact />
+          <Route
+            path="/search/:keyword/page/:pageNum"
+            component={HomeScreen}
+            exact
+          />
+          <Route path="/page/:pageNum" component={HomeScreen} />
           <Route path="/" component={HomeScreen} exact />
         </Container>
       </main>

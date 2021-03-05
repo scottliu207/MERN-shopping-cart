@@ -7,11 +7,13 @@ import {
   adminCreateProduct,
   adminDeleteProduct,
   adminUpdateProduct,
+  getTopProducts,
 } from "../controllers/productControllers.js"
 
 const router = express.Router()
 
 router.route("/").get(getAllProducts).post(protect, admin, adminCreateProduct)
+router.route("/top").get(getTopProducts)
 router
   .route("/:id")
   .get(getProductById)

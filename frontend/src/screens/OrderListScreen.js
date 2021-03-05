@@ -3,7 +3,6 @@ import { Row, Col, Button, Table } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { getOrderList } from "../actions/orderActions"
-import PaginationContainer from "../components/PaginationContainer"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 

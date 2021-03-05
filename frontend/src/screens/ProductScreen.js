@@ -39,7 +39,7 @@ const ProductScreen = ({ match, history }) => {
       setComment("")
     }
     dispatch(productListDetails(productId))
-  }, [dispatch, productId, successReview])
+  }, [dispatch, productId, successReview, errorReview])
 
   const addToCartHandler = () => {
     history.push(`/cart/${productId}?qty=${qty}`)

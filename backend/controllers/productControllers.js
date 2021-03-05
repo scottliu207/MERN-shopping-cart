@@ -5,7 +5,7 @@ import Product from "../models/productModel.js"
 // @route GET /api/products
 // @access Public
 
-const getAllProducts = asyncHandler(async (req, res) => {
+export const getAllProducts = asyncHandler(async (req, res) => {
   // Use regular expression to search product with keyword .
   const keyword = req.query.keyword
     ? {
@@ -33,11 +33,24 @@ const getAllProducts = asyncHandler(async (req, res) => {
   res.json({ products, pages })
 })
 
+// @desc Get Top rated products
+// @route GET /api/products/top
+// @access Public
+export const getTopProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort("-rating").limit(3)
+  if (products) {
+    res.json(products)
+  } else {
+    res.status(404)
+    throw new Error("找不到商品")
+  }
+})
+
 // @desc Get single product
 // @route GET /api/products/:id
 // @access Public
 
-const getProductById = asyncHandler(async (req, res) => {
+export const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
 
   if (product) {
@@ -52,7 +65,7 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route POST /api/products/:id
 // @access Private
 
-const createProductReview = asyncHandler(async (req, res) => {
+export const createProductReview = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
 
   if (product) {
@@ -91,7 +104,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @ desc Create product, admin only.
 // @ route POST /api/products
 // @ access Private/admin
-const adminCreateProduct = asyncHandler(async (req, res) => {
+export const adminCreateProduct = asyncHandler(async (req, res) => {
   const newProduct = await Product.create({
     name: "Sample",
     price: 0,
@@ -110,7 +123,7 @@ const adminCreateProduct = asyncHandler(async (req, res) => {
 // @route PUT /api/products/:id
 // @access Private/admin
 
-const adminUpdateProduct = asyncHandler(async (req, res) => {
+export const adminUpdateProduct = asyncHandler(async (req, res) => {
   const {
     name,
     price,
@@ -143,7 +156,7 @@ const adminUpdateProduct = asyncHandler(async (req, res) => {
 // @desc Removes product, admin only.
 // @route DELETE /api/products/:id
 // @access Private/admin
-const adminDeleteProduct = asyncHandler(async (req, res) => {
+export const adminDeleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
   if (product) {
     await product.remove()
@@ -155,12 +168,3 @@ const adminDeleteProduct = asyncHandler(async (req, res) => {
     throw new Error("找不到商品")
   }
 })
-
-export {
-  getAllProducts,
-  getProductById,
-  createProductReview,
-  adminCreateProduct,
-  adminUpdateProduct,
-  adminDeleteProduct,
-}

@@ -1,11 +1,12 @@
 import React, { useEffect } from "react"
 import { Row, Col } from "react-bootstrap"
+import { useDispatch, useSelector } from "react-redux"
+import { listProducts, getTopProducts } from "../actions/productActions"
 import Product from "../components/Product"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
-import { useDispatch, useSelector } from "react-redux"
-import { listProducts } from "../actions/productActions"
 import PaginationContainer from "../components/PaginationContainer"
+import ProductCarousel from "../components/ProductCarousel"
 
 const HomeScreen = ({ match }) => {
   const dispatch = useDispatch()
@@ -13,22 +14,36 @@ const HomeScreen = ({ match }) => {
   const pageNum = match.params.pageNum
 
   const productList = useSelector((state) => state.productList)
+  const topProducts = useSelector((state) => state.productTop)
+
   const { loading, error, products, pages } = productList
+  const {
+    loading: loadingTop,
+    error: errorTop,
+    products: productsTop,
+  } = topProducts
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNum))
+    dispatch(getTopProducts())
   }, [dispatch, keyword, pageNum])
 
   return (
     <div>
-      <h1>Welcome to Max</h1>
-
       {loading ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
         <>
+          {loadingTop ? (
+            <Loader />
+          ) : errorTop ? (
+            <Message variant="danger">{errorTop}</Message>
+          ) : (
+            productsTop && <ProductCarousel productsTop={productsTop} />
+          )}
+
           <h3>最新商品</h3>
           <Row md={8}>
             {products.map((product) => (

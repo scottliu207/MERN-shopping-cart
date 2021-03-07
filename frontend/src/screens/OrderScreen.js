@@ -150,7 +150,6 @@ const OrderScreen = ({ match, history }) => {
               <h4>訂單總結</h4>
               <ListGroup.Item>商品:$ {order.itemPrice}</ListGroup.Item>
               <ListGroup.Item>運費:$ {order.shippingPrice}</ListGroup.Item>
-              <ListGroup.Item>稅金:$ {order.taxPrice}</ListGroup.Item>
               <ListGroup.Item>總計:$ {order.totalPrice}</ListGroup.Item>
               {userInfo && !userInfo.isAdmin && !order.isPaid && (
                 <ListGroup.Item>

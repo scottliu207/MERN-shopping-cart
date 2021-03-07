@@ -19,10 +19,7 @@ const PlaceOrderScreen = ({ history }) => {
   )
 
   cart.shippingPrice = Math.round(cart.itemsPrice > 3000 ? 0 : 100)
-  cart.taxPrice = Math.round(cart.itemsPrice * 0.02)
-  cart.totalPrice = Math.round(
-    cart.itemsPrice + cart.shippingPrice + cart.taxPrice
-  )
+  cart.totalPrice = Math.round(cart.itemsPrice + cart.shippingPrice)
 
   const addOrder = useSelector((state) => state.addOrder)
   const { error, success, orderItems } = addOrder
@@ -42,7 +39,6 @@ const PlaceOrderScreen = ({ history }) => {
         paymentMethod: cart.paymentMethod,
         shippingPrice: cart.shippingPrice,
         itemPrice: cart.itemsPrice,
-        taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
       })
     )
@@ -116,7 +112,6 @@ const PlaceOrderScreen = ({ history }) => {
             <h4>訂單總結</h4>
             <ListGroup.Item>商品:${cart.itemsPrice} </ListGroup.Item>
             <ListGroup.Item>運費:$ {cart.shippingPrice}</ListGroup.Item>
-            <ListGroup.Item>稅金:$ {cart.taxPrice}</ListGroup.Item>
             <ListGroup.Item>總計:$ {cart.totalPrice}</ListGroup.Item>
             <ListGroup.Item>
               {error && <Message variant="danger">{error}</Message>}

@@ -1,6 +1,7 @@
 main {
   min-height: 80vh;
 }
+
 .carousel {
   display: flex;
   justify-content: center;

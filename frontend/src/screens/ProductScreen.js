@@ -16,7 +16,7 @@ const ProductScreen = ({ match, history }) => {
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(3)
   const [comment, setComment] = useState("")
-
+  const [message, setMessage] = useState("")
   const dispatch = useDispatch()
 
   const productDetails = useSelector((state) => state.productDetails)
@@ -47,6 +47,9 @@ const ProductScreen = ({ match, history }) => {
 
   const reviewHandler = (e) => {
     e.preventDefault()
+    if (!comment) {
+      setMessage("請留言")
+    }
     const review = {
       rating,
       comment,
@@ -186,6 +189,7 @@ const ProductScreen = ({ match, history }) => {
                       </Form.Control>
                     </Form.Group>
                     <Form.Group>
+                      {/* {message && <Message variant="danger">{message}</Message>} */}
                       <Form.Label>評論</Form.Label>
                       <Form.Control
                         value={comment}

@@ -19,10 +19,11 @@ const Search = ({ history }) => {
       <Form.Control
         placeholder="請輸入關鍵字..."
         size="sm"
-        className="mr-sm-2 pr-sm-5 ml-sm-5"
+        className="mx-md-auto pr-sm-5"
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
       ></Form.Control>
+
       <Button style={{ display: "none" }}>搜尋</Button>
     </Form>
   )

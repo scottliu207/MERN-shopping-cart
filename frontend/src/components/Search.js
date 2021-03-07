@@ -15,7 +15,7 @@ const Search = ({ history }) => {
     }
   }
   return (
-    <Form inline onChange={submitHandler}>
+    <Form inline onSubmit={submitHandler}>
       <Form.Control
         placeholder="請輸入關鍵字..."
         size="sm"

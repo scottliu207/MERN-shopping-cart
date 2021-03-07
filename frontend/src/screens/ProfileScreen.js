@@ -33,12 +33,18 @@ const ProfileScreen = ({ history }) => {
     if (!userInfo) {
       history.push("/login")
     } else {
-      if (!user || success || !user.name) {
+      if (!user || !user.name) {
         dispatch(getUserDetails())
         dispatch(getMyOrderList())
       } else {
-        setName(userInfo.name)
-        setEmail(userInfo.email)
+        setName(user.name)
+        setEmail(user.email)
+      }
+      if (success) {
+        setPassword("")
+        setNewPassword("")
+        setConfirmNewPassword("")
+        setMessage("資料更新成功")
       }
     }
   }, [userInfo, dispatch, user, history, success])
@@ -55,6 +61,7 @@ const ProfileScreen = ({ history }) => {
           name: name,
           email: email,
           password: password,
+          newPassword: newPassword,
         })
       )
 
@@ -65,10 +72,16 @@ const ProfileScreen = ({ history }) => {
     <Row>
       <Col md={4}>
         <h1>會員資料</h1>
-        {message && <Message variant="danger">{message}</Message>}
+        {message && (
+          <Message
+            variant={message === "新密碼與確認密碼不相同" ? "danger" : "info"}
+          >
+            {message}
+          </Message>
+        )}
         {error && <Message variant="danger">{error}</Message>}
         {updatedError && <Message variant="danger">{updatedError}</Message>}
-        {success && <Message>資料更新成功</Message>}
+
         {loading && <Loader />}
         <Form className="my-3" onSubmit={submitHandler}>
           <Form.Group>
